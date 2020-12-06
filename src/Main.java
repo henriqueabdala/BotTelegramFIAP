@@ -2,6 +2,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
 import com.pengrad.telegrambot.model.Update;
@@ -19,19 +23,20 @@ import okhttp3.Response;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException {
+		JSONObject jsonObject;
 
-		// Criação do objeto bot com as informações de acesso
+		// Criacao do objeto bot com as informacoes de acesso
 		TelegramBot bot = TelegramBotAdapter.build("");
 
-		// objeto responsável por receber as mensagens
+		// objeto responsavel por receber as mensagens
 		GetUpdatesResponse updatesResponse;
-		// objeto responsável por gerenciar o envio de respostas
+		// objeto responsavel por gerenciar o envio de respostas
 		SendResponse sendResponse;
-		// objeto responsável por gerenciar o envio de ações do chat
+		// objeto responsavel por gerenciar o envio de acoes do chat
 		BaseResponse baseResponse;
 
-		// controle de off-set, isto é, a partir deste ID será lido as mensagens
+		// controle de off-set, isto �, a partir deste ID sera lido as mensagens
 		// pendentes na fila
 		int m = 0;
 		//Saldo Inicial para compras na Feira Online
@@ -223,7 +228,17 @@ public class Main {
 					  .build();
 					Response response = client.newCall(request).execute();
 					//new Gson().fromJson(response.body().string(), 
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), response.body().string()));
+					JSONParser parser = new JSONParser();
+					
+					jsonObject = (JSONObject) parser.parse(response.body().string());
+					JSONObject localizao = (JSONObject) jsonObject.get("location");
+					JSONObject atual = (JSONObject) jsonObject.get("current");
+					
+					String nome = (String) localizao.get("name");
+					String horaLocal = (String) localizao.get("localtime");
+					String temperatura = (String) atual.get("temp_c").toString();
+					
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "A cidade de: " + nome + ", data/hora: " + horaLocal + ", temperatura: " + temperatura + " graus celsius" ));
 					/*sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
 							"Ol�, bem vindo a Feira Online!\n" + "Voc� possui um saldo de: R$ " + saldo + "\n"
 									+ "Oque voc� deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
