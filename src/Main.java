@@ -75,6 +75,8 @@ public class Main {
 						catch (NumberFormatException e) {
 							mensagemTratada.remove(mensagemTratada.size() - 1);
 							sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Valor Inválido !"));
+							sendResponse = bot.execute(
+									new SendMessage(update.message().chat().id(), "Qual o valor você deseja inserir ?"));
 						}
 					} else {						
 						mensagemTratada.add("SOMASALDO");
@@ -110,11 +112,10 @@ public class Main {
 								}
 								break;
 							default:
+								mensagemTratada.remove(mensagemTratada.size() - 1);
+								sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Opção Inválida !"));
 								sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-										"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-												+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-												+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
-								mensagemTratada.clear();
+										"A Maçã custa R$ 1,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
 								break;
 							}								
 							}else {
@@ -147,11 +148,10 @@ public class Main {
 									}
 									break;
 								default:
+									mensagemTratada.remove(mensagemTratada.size() - 1);
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Opção Inválida !"));
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
-									mensagemTratada.clear();
+											"A Banana custa R$ 3,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
 									break;
 								}								
 								}else {
@@ -184,11 +184,10 @@ public class Main {
 									}
 									break;
 								default:
+									mensagemTratada.remove(mensagemTratada.size() - 1);
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Opção Inválida !"));
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
-									mensagemTratada.clear();
+											"A Abacaxi custa R$ 5,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
 									break;
 								}								
 								}else {
@@ -207,7 +206,7 @@ public class Main {
 						}
 					} else {
 						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-								"Qual Fruta você deseja comprar?\n" + "1 - Maçã\n" + "2 - Banana\n" + "3 - Abacaxi"));
+								"Qual Fruta você deseja comprar?\n" + "1 - Maçã\n" + "2 - Banana\n" + "3 - Abacaxi\n" + "4 - Menu Inicial"));
 						mensagemTratada.add("REALIZACOMPRA");
 					}
 					break;
