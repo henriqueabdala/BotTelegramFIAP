@@ -25,7 +25,10 @@ public class Main {
 
 	public static void main(String[] args) throws IOException, ParseException {
 		JSONObject jsonObject;
-
+		
+		//inserir token informado em documentacao da API de clima
+		String token = "";
+		
 		// Criacao do objeto bot com as informacoes de acesso
 		TelegramBot bot = TelegramBotAdapter.build("");
 
@@ -124,7 +127,10 @@ public class Main {
 								mensagemTratada.remove(mensagemTratada.size() - 1);
 								sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Opção Inválida !"));
 								sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-										"A Maçã custa R$ 1,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
+										"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+												+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+												+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
+								mensagemTratada.clear();
 								break;
 							}								
 							}else {
@@ -160,7 +166,10 @@ public class Main {
 									mensagemTratada.remove(mensagemTratada.size() - 1);
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Opção Inválida !"));
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-											"A Banana custa R$ 3,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+													+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+													+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
+									mensagemTratada.clear();
 									break;
 								}								
 								}else {
@@ -196,7 +205,10 @@ public class Main {
 									mensagemTratada.remove(mensagemTratada.size() - 1);
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Opção Inválida !"));
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-											"A Abacaxi custa R$ 5,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+													+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+													+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
+									mensagemTratada.clear();
 									break;
 								}								
 								}else {
@@ -209,7 +221,7 @@ public class Main {
 							sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
 									"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
 											+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-											+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+											+ "2 - Inserir Saldo\n" +  "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 							mensagemTratada.clear();
 							break;
 						}
@@ -223,7 +235,7 @@ public class Main {
 					OkHttpClient client = new OkHttpClient().newBuilder()
 					  .build();
 					Request request = new Request.Builder()
-					  .url("")
+					  .url("http://api.weatherapi.com/v1/current.json?key=" + token + "&q=Sao_Paulo")
 					  .method("GET", null)
 					  .build();
 					Response response = client.newCall(request).execute();
@@ -238,11 +250,7 @@ public class Main {
 					String horaLocal = (String) localizao.get("localtime");
 					String temperatura = (String) atual.get("temp_c").toString();
 					
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "A cidade de: " + nome + ", data/hora: " + horaLocal + ", temperatura: " + temperatura + " graus celsius" ));
-					/*sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-							"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
-									+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
-									+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));*/
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Você está em: " + nome + "\nData/hora: " + horaLocal + "\nA Temperatura é de: " + temperatura + "º graus celsius" ));
 					mensagemTratada.clear();
 					break;
 				default:	
