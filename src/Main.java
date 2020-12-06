@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pengrad.telegrambot.TelegramBot;
@@ -16,7 +17,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		// CriaÃ§Ã£o do objeto bot com as informaÃ§Ãµes de acesso
-		TelegramBot bot = TelegramBotAdapter.build("TOKEN");
+		TelegramBot bot = TelegramBotAdapter.build("");
 
 		// objeto responsÃ¡vel por receber as mensagens
 		GetUpdatesResponse updatesResponse;
@@ -28,6 +29,9 @@ public class Main {
 		// controle de off-set, isto Ã©, a partir deste ID serÃ¡ lido as mensagens
 		// pendentes na fila
 		int m = 0;
+		Double saldo = 5.00;
+		List<String> mensagemTratada = new ArrayList<String>();
+		mensagemTratada.clear();
 
 		// loop infinito pode ser alterado por algum timer de intervalo curto
 		while (true) {
@@ -38,7 +42,6 @@ public class Main {
 
 			// lista de mensagens
 			List<Update> updates = updatesResponse.updates();
-			Double saldo = 5.00;			
 			// anÃ¡lise de cada aÃ§Ã£o da mensagem
 			for (Update update : updates) {
 
@@ -50,40 +53,177 @@ public class Main {
 				baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
 				// verificaÃ§Ã£o de aÃ§Ã£o de chat foi enviada com sucesso
 				// System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
-				String mensagemTratada = update.message().text().replaceAll("\\s", "").toLowerCase();
-				System.out.println("Recebendo mensagem:" + mensagemTratada);				
-					switch (mensagemTratada) {
-					case "1":
-						sendResponse = bot
-								.execute(new SendMessage(update.message().chat().id(), "Seu Saldo é de: R$ " + saldo));
-						// System.out.println("Saldo de : " +saldo);
-						break;
-					case "2":
-						sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Qual o valor você deseja inserir ?"));						
-						// System.out.println("Saldo de : " +saldo);
-						break;
-					case "3":
-						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-								"Qual Fruta você deseja comprar?\n" + "1 - Maçã\n" + "2 - Banana\n" + "3 - Abacaxi"));
-						/*switch (key) {
-						case value:
-							
-							break;
-
-						default:
-							break;
-						}*/
-						// System.out.println("Saldo de : " +saldo);
-						break;
-					default:
-						/*sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Não entendi SWITCH CASE..."));
-						System.out.println("Mensagem Enviada?" + sendResponse.isOk());*/
+				mensagemTratada.add(update.message().text().replaceAll("\\s", "").toLowerCase());
+				System.out.println("Recebendo mensagem:" + update.message().text().replaceAll("\\s", "").toLowerCase());
+				System.out.println("POSICAO ZERO:" + mensagemTratada.get(0).toString());
+				switch (mensagemTratada.get(0)) {
+				case "1":
+					sendResponse = bot
+							.execute(new SendMessage(update.message().chat().id(), "Seu Saldo é de: R$ " + saldo));
+					mensagemTratada.clear();
+					// System.out.println("Saldo de : " +saldo);
+					break;
+				case "2":
+					if (mensagemTratada.size() >= 2) {						
+						try {
+						saldo += Double.parseDouble(update.message().text().replaceAll("\\s", "").toLowerCase());
 						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
 								"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
 										+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
 										+ "3 - Comprar Frutas"));
-						break;
+						mensagemTratada.clear();}
+						catch (NumberFormatException e) {
+							mensagemTratada.remove(mensagemTratada.size() - 1);
+							sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Valor Inválido !"));
+						}
+					} else {						
+						mensagemTratada.add("SOMASALDO");
+						sendResponse = bot.execute(
+								new SendMessage(update.message().chat().id(), "Qual o valor você deseja inserir ?"));						
 					}
+					break;
+				case "3":
+					System.out.println("size " + mensagemTratada.size());
+					if (mensagemTratada.size() >= 2) {
+						switch (mensagemTratada.get(2)) {
+						case "1":
+							if (mensagemTratada.size() >= 4) {
+							 switch (mensagemTratada.get(4)) {
+							case "1":
+								if (saldo >= 1) {
+									saldo -= 1;
+									sendResponse = bot.execute(
+											new SendMessage(update.message().chat().id(), "Compra Realizada com Sucesso!"));
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+									mensagemTratada.clear();
+								} else {
+									sendResponse = bot
+											.execute(new SendMessage(update.message().chat().id(), "Saldo Insuficiente!"));
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+									mensagemTratada.clear();
+								}
+								break;
+							default:
+								sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+										"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+												+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+												+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+								mensagemTratada.clear();
+								break;
+							}								
+							}else {
+								sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+										"A Maçã custa R$ 1,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
+								mensagemTratada.add("SELECIONADAFRUTA");
+							}												
+							break;
+						case "2":
+							if (mensagemTratada.size() >= 4) {
+								 switch (mensagemTratada.get(4)) {
+								case "1":
+									if (saldo >= 3) {
+										saldo -= 3;
+										sendResponse = bot.execute(
+												new SendMessage(update.message().chat().id(), "Compra Realizada com Sucesso!"));
+										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+										mensagemTratada.clear();
+									} else {
+										sendResponse = bot
+												.execute(new SendMessage(update.message().chat().id(), "Saldo Insuficiente!"));
+										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+										mensagemTratada.clear();
+									}
+									break;
+								default:
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+									mensagemTratada.clear();
+									break;
+								}								
+								}else {
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+											"A Banana custa R$ 3,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
+									mensagemTratada.add("SELECIONADAFRUTA");
+								}
+							break;
+						case "3":
+							if (mensagemTratada.size() >= 4) {
+								 switch (mensagemTratada.get(4)) {
+								case "1":
+									if (saldo >= 5) {
+										saldo -= 5;
+										sendResponse = bot.execute(
+												new SendMessage(update.message().chat().id(), "Compra Realizada com Sucesso!"));
+										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+										mensagemTratada.clear();
+									} else {
+										sendResponse = bot
+												.execute(new SendMessage(update.message().chat().id(), "Saldo Insuficiente!"));
+										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+										mensagemTratada.clear();
+									}
+									break;
+								default:
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
+													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+									mensagemTratada.clear();
+									break;
+								}								
+								}else {
+									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+											"A Abacaxi custa R$ 5,00, deseja comprar mesmo assim?\n" + "1 - Sim\n" + "2 - Não"));
+									mensagemTratada.add("SELECIONADAFRUTA");
+								}
+							break;
+						default:
+							sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+									"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+											+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
+											+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+							mensagemTratada.clear();
+							break;
+						}
+					} else {
+						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+								"Qual Fruta você deseja comprar?\n" + "1 - Maçã\n" + "2 - Banana\n" + "3 - Abacaxi"));
+						mensagemTratada.add("REALIZACOMPRA");
+					}
+					break;
+				default:
+					/*
+					 * sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+					 * "Não entendi SWITCH CASE...")); System.out.println("Mensagem Enviada?" +
+					 * sendResponse.isOk());
+					 */
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+							"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+									+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+									+ "3 - Comprar Frutas"));
+					mensagemTratada.clear();
+					break;
+				}
 				/*
 				 * if (mensagemTratada.contains("1")) { sendResponse = bot.execute(new
 				 * SendMessage(update.message().chat().id(),"Condição Climática")); } else if
