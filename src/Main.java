@@ -29,7 +29,13 @@ public class Main {
 		// controle de off-set, isto Ã©, a partir deste ID serÃ¡ lido as mensagens
 		// pendentes na fila
 		int m = 0;
-		Double saldo = 5.00;
+		//Saldo Inicial para compras na Feira Online
+		Double saldo = 5.00;		
+		/* Exemplificação do funcionamento:
+		 * A partir de qualquer comando será aberto um menu onde ja existem as opções para seleção
+		 * caso não selecione nenhuma das opções em questão retorna ao menu inferior ou Inicial	 
+		 */
+		//StringList para tratamento das opções selecionadas pelo usuário
 		List<String> mensagemTratada = new ArrayList<String>();
 		mensagemTratada.clear();
 
@@ -42,26 +48,19 @@ public class Main {
 
 			// lista de mensagens
 			List<Update> updates = updatesResponse.updates();
-			// anÃ¡lise de cada aÃ§Ã£o da mensagem
 			for (Update update : updates) {
 
-				// atualizaÃ§Ã£o do off-set
+				// atualização do off-set
 				m = update.updateId() + 1;
 				System.out.println("OFF-SET " + m);
 
-				// envio de "Escrevendo" antes de enviar a resposta
-				baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
-				// verificaÃ§Ã£o de aÃ§Ã£o de chat foi enviada com sucesso
-				// System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
+				baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));				
 				mensagemTratada.add(update.message().text().replaceAll("\\s", "").toLowerCase());
-				System.out.println("Recebendo mensagem:" + update.message().text().replaceAll("\\s", "").toLowerCase());
-				System.out.println("POSICAO ZERO:" + mensagemTratada.get(0).toString());
 				switch (mensagemTratada.get(0)) {
 				case "1":
 					sendResponse = bot
 							.execute(new SendMessage(update.message().chat().id(), "Seu Saldo é de: R$ " + saldo));
 					mensagemTratada.clear();
-					// System.out.println("Saldo de : " +saldo);
 					break;
 				case "2":
 					if (mensagemTratada.size() >= 2) {						
@@ -210,12 +209,7 @@ public class Main {
 						mensagemTratada.add("REALIZACOMPRA");
 					}
 					break;
-				default:
-					/*
-					 * sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-					 * "Não entendi SWITCH CASE...")); System.out.println("Mensagem Enviada?" +
-					 * sendResponse.isOk());
-					 */
+				default:	
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
 							"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
 									+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
@@ -223,18 +217,6 @@ public class Main {
 					mensagemTratada.clear();
 					break;
 				}
-				/*
-				 * if (mensagemTratada.contains("1")) { sendResponse = bot.execute(new
-				 * SendMessage(update.message().chat().id(),"Condição Climática")); } else if
-				 * (mensagemTratada.contains("2") || mensagemTratada.contains("oi") ||
-				 * mensagemTratada.contains("tudobem")) { sendResponse = bot.execute(new
-				 * SendMessage(update.message().chat().id(),"Condição Fisica")); } else {
-				 * //envio da mensagem de resposta sendResponse = bot.execute(new
-				 * SendMessage(update.message().chat().id(),"Não entendi...")); //verificaÃ§Ã£o
-				 * de mensagem enviada com sucesso System.out.println("Mensagem Enviada?"
-				 * +sendResponse.isOk()); }
-				 */
-
 			}
 
 		}
