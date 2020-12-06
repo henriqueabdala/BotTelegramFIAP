@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,13 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		// CriaÃ§Ã£o do objeto bot com as informaÃ§Ãµes de acesso
 		TelegramBot bot = TelegramBotAdapter.build("");
@@ -69,7 +74,7 @@ public class Main {
 						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
 								"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
 										+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
-										+ "3 - Comprar Frutas"));
+										+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 						mensagemTratada.clear();}
 						catch (NumberFormatException e) {
 							mensagemTratada.remove(mensagemTratada.size() - 1);
@@ -96,17 +101,17 @@ public class Main {
 									sendResponse = bot.execute(
 											new SendMessage(update.message().chat().id(), "Compra Realizada com Sucesso!"));
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+													+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+													+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 									mensagemTratada.clear();
 								} else {
 									sendResponse = bot
 											.execute(new SendMessage(update.message().chat().id(), "Saldo Insuficiente!"));
 									sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-													+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-													+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+											"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+													+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+													+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 									mensagemTratada.clear();
 								}
 								break;
@@ -132,17 +137,17 @@ public class Main {
 										sendResponse = bot.execute(
 												new SendMessage(update.message().chat().id(), "Compra Realizada com Sucesso!"));
 										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+														+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+														+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 										mensagemTratada.clear();
 									} else {
 										sendResponse = bot
 												.execute(new SendMessage(update.message().chat().id(), "Saldo Insuficiente!"));
 										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+														+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+														+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 										mensagemTratada.clear();
 									}
 									break;
@@ -168,17 +173,17 @@ public class Main {
 										sendResponse = bot.execute(
 												new SendMessage(update.message().chat().id(), "Compra Realizada com Sucesso!"));
 										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+														+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+														+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 										mensagemTratada.clear();
 									} else {
 										sendResponse = bot
 												.execute(new SendMessage(update.message().chat().id(), "Saldo Insuficiente!"));
 										sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo
-														+ "\n" + "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n"
-														+ "2 - Inserir Saldo\n" + "3 - Comprar Frutas"));
+												"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+														+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+														+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 										mensagemTratada.clear();
 									}
 									break;
@@ -209,11 +214,27 @@ public class Main {
 						mensagemTratada.add("REALIZACOMPRA");
 					}
 					break;
+				case "4":
+					OkHttpClient client = new OkHttpClient().newBuilder()
+					  .build();
+					Request request = new Request.Builder()
+					  .url("")
+					  .method("GET", null)
+					  .build();
+					Response response = client.newCall(request).execute();
+					//new Gson().fromJson(response.body().string(), 
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), response.body().string()));
+					/*sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+							"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
+									+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
+									+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));*/
+					mensagemTratada.clear();
+					break;
 				default:	
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
 							"Olá, bem vindo a Feira Online!\n" + "Você possui um saldo de: R$ " + saldo + "\n"
 									+ "Oque você deseja fazer?\n" + "1 - Consultar Saldo\n" + "2 - Inserir Saldo\n"
-									+ "3 - Comprar Frutas"));
+									+ "3 - Comprar Frutas\n" + "4 - Clima Atual"));
 					mensagemTratada.clear();
 					break;
 				}
